@@ -36,6 +36,14 @@
           </span>
           <v-benefit></v-benefit>
         </el-tab-pane>
+        <el-tab-pane label="金额查询" name="six">
+          <span slot="label">
+            <el-image :src="roleIcon.cszz" :fit="fits[0]" style="width: 18px; height: 18px;margin-top: 3px;">
+            </el-image>
+             金额查询
+          </span>
+          <v-balanceQuery></v-balanceQuery>
+        </el-tab-pane>
         <el-tab-pane label="援助审核" name="third">
          <span slot="label">
             <el-image :src="roleIcon.cszz" :fit="fits[0]" style="width: 18px; height: 18px;margin-top: 3px;">
@@ -69,12 +77,14 @@
 import vdonator from '@/components/detail-components/donator'
 import beneficiaries from './detail-components/beneficiaries'
 import allocatAudit from './detail-components/allocat-audit'
+import balanceQuery from './detail-components/balanceQuery'
 
 export default {
   components: {
     'v-donator': vdonator,
     'v-benefit': beneficiaries,
-    'v-allocat-audit': allocatAudit
+    'v-allocat-audit': allocatAudit,
+    'v-balanceQuery': balanceQuery
   },
   data () {
     return {

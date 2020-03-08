@@ -13,14 +13,14 @@
         <el-form   ref="form" :model="form" label-width="80px">
           <el-row>
             <el-col :span="12">
-              <el-form-item label="姓名">
-                <el-input v-model="form.name">1111</el-input>
+              <el-form-item label="address">
+                <el-input v-model="form.address">0001</el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="金额">
                 <el-col></el-col>
-                <el-input v-model="form.amount">1111</el-input>
+                <el-input v-model="form.balance">1111</el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -118,11 +118,12 @@
         <el-tag  :type="warning">{{certification.amount}}</el-tag>
         <div style="position: relative; width: 100%; height: 100%;">
           <el-image :src="certification.imageUrl"></el-image>
-          <span style="position: absolute; bottom: 25%; left: 20%;right:15%;font-size: 20px;line-height: 60px;">
+          <span style="position: absolute; bottom: 10%; left: 20%;right:15%;font-size: 20px;line-height: 60px;">
             <span>{{certification.name}} &nbsp;&nbsp; 先生/女士：</span>
           <br>
 
-            <span> &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;您已为[xxx项目]于{{certification.date}}慷慨捐赠[{{certification.amount}}]元。</span>
+            <span> &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;您已为[xxx项目]于{{certification.date}}慷慨捐赠[{{certification.amount}}]元。
+            <br>&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;区块号:{{certification.blockNo}},交易hash:{{certification.txHash}},时间戳:{{certification.timestamp}}</span>
           <br> <br>
             <span>感谢您，让世界更温暖！</span>
           <br>
@@ -135,85 +136,100 @@
     </el-main>
   </el-container>
 </template>
-<script>/* eslint-disable */
-  export default {
-  data() {
-    return {
-      form: {
-        name: '',
-        region: '',
-        desc: '',
-        amount: 1000,
-        project: ''
-      },
-      logImage:{
-        fits: ['fill', 'contain', 'cover', 'none', 'scale-down'],
-        image_url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
-      },
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        amount: 200333,
-        tag: '家'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1517 弄',
-        amount: 200333,
-        tag: '公司'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1519 弄',
-        amount: 200333,
-        tag: '家'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1516 弄',
-        amount: 200333,
-        tag: '公司'
-      }],
-      dialogTableVisible: false,
-      certification: {
-        name: '',
-        date: '',
-        amount: '',
-        imageUrl: ''
-      }
-    }
-  },
-  methods: {
-    onSubmit() {
-      this.$message({
-        message: '提交成功'+this.form.name,
-        type: 'success'
-      })
-      console.log('submit!');
-      this.$http.get("https://www.baidu.com").then(function (res) {
-        console.log(res)
-      })
+<script>
+export default {/* eslint-disable */
+data() {
+  return {
+    form: {
+      balance: 1000,
+      timestamp: new Date().getTime(),
+      toAddress: '0002',
+      sign: '0001'
     },
-    showCertificate(index,row) {
-      this.dialogTableVisible = true
-      this.certification.amount = row.amount
-      this.certification.date = row.date
-      this.certification.name = row.name
-      this.certification.imageUrl = 'static/捐赠证书-空白.png'
-      this.$message({
-        message: '显示证书'+row.amount,
-        type: 'success'
-      })
+    logImage:{
+      fits: ['fill', 'contain', 'cover', 'none', 'scale-down'],
+      image_url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
+    },
+    tableData: [{
+      date: '2016-05-02',
+      name: '王小虎',
+      province: '上海',
+      city: '普陀区',
+      address: '上海市普陀区金沙江路 1518 弄',
+      amount: 200333,
+      tag: '家'
+    }, {
+      date: '2016-05-04',
+      name: '王小虎',
+      province: '上海',
+      city: '普陀区',
+      address: '上海市普陀区金沙江路 1517 弄',
+      amount: 200333,
+      tag: '公司'
+    }, {
+      date: '2016-05-01',
+      name: '王小虎',
+      province: '上海',
+      city: '普陀区',
+      address: '上海市普陀区金沙江路 1519 弄',
+      amount: 200333,
+      tag: '家'
+    }, {
+      date: '2016-05-03',
+      name: '王小虎',
+      province: '上海',
+      city: '普陀区',
+      address: '上海市普陀区金沙江路 1516 弄',
+      amount: 200333,
+      tag: '公司'
+    }],
+    dialogTableVisible: false,
+    certification: {
+      name: '',
+      date: '',
+      amount: '',
+      imageUrl: '',
+      blockNo:'',
+      txHash:'',
+      timestamp:''
     }
   }
+},
+methods: {
+  onSubmit() {
+    this.$message({
+      message: '提交成功'+'http://localhost:8080',
+      type: 'success'
+    })
+    console.log('submit!');
+    this.$http.post(
+      'http://localhost:8080/api/donate',
+      this.form).then(function (res) {
+      console.log(res)
+      console.log(res.data.data.blockNo)
+      let result = res.data.data
+      this.dialogTableVisible = true
+      this.certification.amount = result.balance
+
+      this.certification.date = '2020-03-08'
+      this.certification.blockNo = result.blockNo
+      this.certification.txHash = result.txHash
+      this.certification.timestamp = result.timestamp
+      this.certification.name = '王先生'
+      this.certification.imageUrl = 'static/捐赠证书-空白.png'
+    })
+  },
+  showCertificate(index,row) {
+    this.dialogTableVisible = true
+    this.certification.amount = row.amount
+    this.certification.date = row.date
+    this.certification.name = row.name
+    this.certification.imageUrl = 'static/捐赠证书-空白.png'
+    this.$message({
+      message: '显示证书'+row.amount,
+      type: 'success'
+    })
   }
+}
+}
 </script>
